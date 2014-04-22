@@ -9,11 +9,12 @@ import com.ucacu.gion.recommendation.model.DefaultSimilarItem;
 import com.ucacu.gion.recommendation.model.SimilarItem;
 import com.ucacu.gion.recommendation.test.TestHelper;
 
-public class DistanceBasedRecommenderTest {
+public class PearsonBasedRecommenderTest {
+
     @Test
     public void testGetSimilarItems() throws InstantiationException, IllegalAccessException {
         List<Critic> critics = TestHelper.getTestCritics();
-        DistanceBasedRecommender<DefaultSimilarItem> recommender = new DistanceBasedRecommender<DefaultSimilarItem>();
+        PearsonBasedRecommender<DefaultSimilarItem> recommender = new PearsonBasedRecommender<DefaultSimilarItem>();
 
         List<DefaultSimilarItem> items = recommender.getSimilarItems(critics, critics.get(6), DefaultSimilarItem.class);
         recommender.sortBySimilarity(items);

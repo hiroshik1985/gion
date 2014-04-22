@@ -1,10 +1,9 @@
 package com.ucacu.gion.recommendation;
 
 import com.ucacu.gion.recommendation.model.Critic;
-import com.ucacu.gion.recommendation.model.Score;
-import com.ucacu.gion.recommendation.model.SimilarItem;
+import com.ucacu.gion.recommendation.model.Item;
 
-public class PearsonBasedRecommender<T extends SimilarItem> extends Recommender<T> {
+public class PearsonBasedRecommender<T extends Item> extends Recommender<T> {
     @Override
     public double getSimilarity(Critic critic1, Critic critic2) {
         int n = 0;
@@ -14,15 +13,15 @@ public class PearsonBasedRecommender<T extends SimilarItem> extends Recommender<
         double sumSquares2 = 0.0d;
         double sumProduct = 0.0d;
 
-        for (Score s1 : critic1.getScores()) {
-            for (Score s2 : critic2.getScores()) {
-                if (s1.getKey().equals(s2.getKey())) {
+        for (Item item1 : critic1.getItems()) {
+            for (Item item2 : critic2.getItems()) {
+                if (item1.getKey().equals(item2.getKey())) {
                     n++;
-                    sum1 += s1.getScore();
-                    sum2 += s2.getScore();
-                    sumSquares1 += Math.pow(s1.getScore(), 2);
-                    sumSquares2 += Math.pow(s2.getScore(), 2);
-                    sumProduct += s1.getScore() * s2.getScore();
+                    sum1 += item1.getValue();
+                    sum2 += item2.getValue();
+                    sumSquares1 += Math.pow(item1.getValue(), 2);
+                    sumSquares2 += Math.pow(item2.getValue(), 2);
+                    sumProduct += item1.getValue() * item2.getValue();
                 }
             }
         }

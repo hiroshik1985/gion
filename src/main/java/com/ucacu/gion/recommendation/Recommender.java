@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.ucacu.gion.recommendation.model.Critic;
-import com.ucacu.gion.recommendation.model.SimilarItem;
+import com.ucacu.gion.recommendation.model.Item;
 
-public abstract class Recommender<T extends SimilarItem> {
+public abstract class Recommender<T extends Item> {
     public abstract double getSimilarity(Critic critic1, Critic critic2);
 
-    public List<T> getSimilarItems(List<Critic> critics, Critic target, Class<T> clazz) throws InstantiationException,
+    public List<T> getSimilarities(List<Critic> critics, Critic target, Class<T> clazz) throws InstantiationException,
             IllegalAccessException {
 
         List<T> items = new ArrayList<T>();
@@ -17,7 +17,7 @@ public abstract class Recommender<T extends SimilarItem> {
             if (!target.getKey().equals(c.getKey())) {
                 T item = clazz.newInstance();
                 item.setKey(c.getKey());
-                item.setSimilarity(this.getSimilarity(c, target));
+                item.setValue(this.getSimilarity(c, target));
                 items.add(item);
             }
         }
@@ -25,17 +25,38 @@ public abstract class Recommender<T extends SimilarItem> {
         return items;
     }
 
-    public void sortBySimilarity(List<T> list)
+    /*
+    public List<T> getRecommendations(List<Critic> critics, Critic target, Class<T> clazz) throws InstantiationException,
+            IllegalAccessException {
+        List<Double> totals = new ArrayList<Double>();
+        List<Double> sumSimilarities = new ArrayList<Double>();
+
+        for (Critic c : critics) {
+            if (!c.getKey().equals(target.getKey())) {
+                double simirality = getSimilarity(c, target);
+                if (simirality != 0)
+                    continue;
+
+                for (Item score : c.getItems()) {
+                    for (Item scoreTarget : target.getItems()) {}
+                }
+            }
+        }
+
+    }
+    */
+
+    public void sortByItemValue(List<T> items)
     {
         boolean flag = true;
         T tmp;
         while (flag) {
             flag = false;
-            for (int i = 0; i < list.size() - 1; i++) {
-                if (list.get(i).getSimilarity() < list.get(i + 1).getSimilarity()) {
-                    tmp = list.get(i);
-                    list.set(i, list.get(i + 1));
-                    list.set(i + 1, tmp);
+            for (int i = 0; i < items.size() - 1; i++) {
+                if (items.get(i).getValue() < items.get(i + 1).getValue()) {
+                    tmp = items.get(i);
+                    items.set(i, items.get(i + 1));
+                    items.set(i + 1, tmp);
                     flag = true;
                 }
             }

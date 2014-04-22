@@ -5,5 +5,5 @@ import java.util.List;
 public interface Critic {
     public Object getKey();
 
-    public List<Score> getScores();
+    public List<Item> getItems();
 }

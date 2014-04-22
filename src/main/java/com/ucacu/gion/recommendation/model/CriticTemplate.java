@@ -1,4 +1,4 @@
-package com.ucacu.gion.recommendation.data;
+package com.ucacu.gion.recommendation.model;
 
 import java.util.List;
 

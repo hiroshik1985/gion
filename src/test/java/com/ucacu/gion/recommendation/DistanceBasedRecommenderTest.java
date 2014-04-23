@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.ucacu.gion.recommendation.model.Critic;
+import com.ucacu.gion.recommendation.model.ItemList;
 import com.ucacu.gion.recommendation.model.DefaultItem;
 import com.ucacu.gion.recommendation.model.Item;
 import com.ucacu.gion.recommendation.test.TestHelper;
@@ -12,7 +12,7 @@ import com.ucacu.gion.recommendation.test.TestHelper;
 public class DistanceBasedRecommenderTest {
     @Test
     public void testGetItems() throws InstantiationException, IllegalAccessException {
-        List<Critic> critics = TestHelper.getTestCritics();
+        List<ItemList> critics = TestHelper.getTestCritics();
         DistanceBasedRecommender<DefaultItem> recommender = new DistanceBasedRecommender<DefaultItem>();
 
         List<DefaultItem> items = recommender.getSimilarities(critics, critics.get(6), DefaultItem.class);

@@ -3,17 +3,17 @@ package com.ucacu.gion.recommendation;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.ucacu.gion.recommendation.model.Critic;
+import com.ucacu.gion.recommendation.model.ItemList;
 import com.ucacu.gion.recommendation.model.Item;
 
 public abstract class Recommender<T extends Item> {
-    public abstract double getSimilarity(Critic critic1, Critic critic2);
+    public abstract double getSimilarity(ItemList critic1, ItemList critic2);
 
-    public List<T> getSimilarities(List<Critic> critics, Critic target, Class<T> clazz) throws InstantiationException,
+    public List<T> getSimilarities(List<ItemList> critics, ItemList target, Class<T> clazz) throws InstantiationException,
             IllegalAccessException {
 
         List<T> items = new ArrayList<T>();
-        for (Critic c : critics) {
+        for (ItemList c : critics) {
             if (!target.getKey().equals(c.getKey())) {
                 T item = clazz.newInstance();
                 item.setKey(c.getKey());

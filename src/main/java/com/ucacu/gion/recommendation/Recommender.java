@@ -1,23 +1,28 @@
 package com.ucacu.gion.recommendation;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
-import com.ucacu.gion.recommendation.model.ItemList;
 import com.ucacu.gion.recommendation.model.Item;
+import com.ucacu.gion.recommendation.model.ItemList;
+import com.ucacu.gion.recommendation.util.ItemListUtil;
 
 public abstract class Recommender<T extends Item> {
     public abstract double getSimilarity(ItemList critic1, ItemList critic2);
 
-    public List<T> getSimilarities(List<ItemList> critics, ItemList target, Class<T> clazz) throws InstantiationException,
+    public List<T> getSimilarities(List<ItemList> itemLists, ItemList targetList, Class<T> clazz) throws InstantiationException,
             IllegalAccessException {
 
         List<T> items = new ArrayList<T>();
-        for (ItemList c : critics) {
-            if (!target.getKey().equals(c.getKey())) {
+        for (ItemList itemList : itemLists) {
+            if (!targetList.getKey().equals(itemList.getKey())) {
                 T item = clazz.newInstance();
-                item.setKey(c.getKey());
-                item.setValue(this.getSimilarity(c, target));
+                item.setKey(itemList.getKey());
+                item.setValue(this.getSimilarity(itemList, targetList));
                 items.add(item);
             }
         }
@@ -25,26 +30,40 @@ public abstract class Recommender<T extends Item> {
         return items;
     }
 
-    /*
-    public List<T> getRecommendations(List<Critic> critics, Critic target, Class<T> clazz) throws InstantiationException,
+    public List<T> getRecommendations(List<ItemList> itemLists, ItemList targetList, Class<T> clazz) throws InstantiationException,
             IllegalAccessException {
-        List<Double> totals = new ArrayList<Double>();
-        List<Double> sumSimilarities = new ArrayList<Double>();
+        Map<Object, Double> totals = new HashMap<Object, Double>();
+        Map<Object, Double> sumSimilarities = new HashMap<Object, Double>();
 
-        for (Critic c : critics) {
-            if (!c.getKey().equals(target.getKey())) {
-                double simirality = getSimilarity(c, target);
-                if (simirality != 0)
+        for (ItemList itemList : itemLists) {
+            if (!itemList.getKey().equals(targetList.getKey())) {
+                double simirality = getSimilarity(itemList, targetList);
+                if (simirality == 0.0d)
                     continue;
 
-                for (Item score : c.getItems()) {
-                    for (Item scoreTarget : target.getItems()) {}
+                for (Item item : targetList.getItems()) {
+                    if (ItemListUtil.containsItem(itemList, item) || item.getValue() == 0.0d) {
+                        totals.put(item.getKey(),
+                                totals.containsKey(item.getKey()) ? totals.get(item.getKey()) + item.getValue() * simirality : item.getValue() * simirality);
+                        sumSimilarities.put(item.getKey(),
+                                sumSimilarities.containsKey(item.getKey()) ? sumSimilarities.get(item.getKey()) + simirality : simirality);
+                    }
                 }
             }
         }
+        List<T> recommendations = new ArrayList<T>();
 
+        for (Iterator<Entry<Object, Double>> it = totals.entrySet().iterator(); it.hasNext();) {
+            Map.Entry<Object, Double> entry = (Map.Entry<Object, Double>) it.next();
+            T item = clazz.newInstance();
+            item.setKey(entry.getKey());
+            item.setValue(entry.getValue() / sumSimilarities.get(entry.getKey()));
+            recommendations.add(item);
+        }
+
+        sortByItemValue(recommendations);
+        return recommendations;
     }
-    */
 
     public void sortByItemValue(List<T> items)
     {

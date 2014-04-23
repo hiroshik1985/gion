@@ -24,7 +24,7 @@ public class DistanceBasedRecommenderTest {
     }
 
     @Test
-    public void testGetRecommends() throws InstantiationException, IllegalAccessException {
+    public void testGetRecommendtionss() throws InstantiationException, IllegalAccessException {
         List<ItemList> critics = TestHelper.getTestCritics();
         DistanceBasedRecommender<DefaultItem> recommender = new DistanceBasedRecommender<DefaultItem>();
 

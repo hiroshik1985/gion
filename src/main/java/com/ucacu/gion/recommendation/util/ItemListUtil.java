@@ -11,4 +11,12 @@ public class ItemListUtil {
         }
         return false;
     }
+
+    public static Item getNodeByKey(ItemList items, Object key) {
+        for (Item item : items.getItems()) {
+            if (item.getKey().equals(key))
+                return item;
+        }
+        return null;
+    }
 }

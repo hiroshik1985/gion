@@ -38,13 +38,15 @@ public abstract class Recommender<T extends Item> {
         for (ItemList itemList : itemLists) {
             if (!itemList.getKey().equals(targetList.getKey())) {
                 double simirality = getSimilarity(itemList, targetList);
-                if (simirality == 0.0d)
+                if (simirality <= 0.0d)
                     continue;
 
-                for (Item item : targetList.getItems()) {
-                    if (ItemListUtil.containsItem(itemList, item) || item.getValue() == 0.0d) {
+                for (Item item : itemList.getItems()) {
+                    Item node = ItemListUtil.getNodeByKey(targetList, item.getKey());
+                    if (node == null || node.getValue() == 0.0d) {
                         totals.put(item.getKey(),
-                                totals.containsKey(item.getKey()) ? totals.get(item.getKey()) + item.getValue() * simirality : item.getValue() * simirality);
+                                totals.containsKey(item.getKey()) ? totals.get(item.getKey()) + item.getValue() * simirality : item.getValue()
+                                        * simirality);
                         sumSimilarities.put(item.getKey(),
                                 sumSimilarities.containsKey(item.getKey()) ? sumSimilarities.get(item.getKey()) + simirality : simirality);
                     }

@@ -11,10 +11,10 @@ import com.ucacu.gion.recommendation.model.Item;
 import com.ucacu.gion.recommendation.model.ItemList;
 import com.ucacu.gion.recommendation.util.ItemListUtil;
 
-public abstract class Recommender<T extends Item> {
+public abstract class Recommender {
     public abstract double getSimilarity(ItemList critic1, ItemList critic2);
 
-    public List<T> getSimilarities(List<ItemList> itemLists, ItemList targetList, Class<T> clazz) throws InstantiationException,
+    public <T extends Item> List<T> getSimilarities(List<ItemList> itemLists, ItemList targetList, Class<T> clazz) throws InstantiationException,
             IllegalAccessException {
 
         List<T> items = new ArrayList<T>();
@@ -30,7 +30,7 @@ public abstract class Recommender<T extends Item> {
         return items;
     }
 
-    public List<T> getRecommendations(List<ItemList> itemLists, ItemList targetList, Class<T> clazz) throws InstantiationException,
+    public <T extends Item> List<T> getRecommendations(List<ItemList> itemLists, ItemList targetList, Class<T> clazz) throws InstantiationException,
             IllegalAccessException {
         Map<Object, Double> totals = new HashMap<Object, Double>();
         Map<Object, Double> sumSimilarities = new HashMap<Object, Double>();
@@ -67,7 +67,7 @@ public abstract class Recommender<T extends Item> {
         return recommendations;
     }
 
-    public void sortByItemValue(List<T> items)
+    public <T extends Item> void sortByItemValue(List<T> items)
     {
         boolean flag = true;
         T tmp;

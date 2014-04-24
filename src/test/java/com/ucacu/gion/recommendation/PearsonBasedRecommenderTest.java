@@ -14,7 +14,7 @@ public class PearsonBasedRecommenderTest {
     @Test
     public void testGetItems() throws InstantiationException, IllegalAccessException {
         List<ItemList> critics = TestHelper.getTestCritics();
-        PearsonBasedRecommender<DefaultItem> recommender = new PearsonBasedRecommender<DefaultItem>();
+        PearsonBasedRecommender recommender = new PearsonBasedRecommender();
 
         List<DefaultItem> items = recommender.getSimilarities(critics, critics.get(6), DefaultItem.class);
         recommender.sortByItemValue(items);
@@ -27,7 +27,7 @@ public class PearsonBasedRecommenderTest {
     @Test
     public void testGetRecommendtions() throws InstantiationException, IllegalAccessException {
         List<ItemList> critics = TestHelper.getTestCritics();
-        PearsonBasedRecommender<DefaultItem> recommender = new PearsonBasedRecommender<DefaultItem>();
+        PearsonBasedRecommender recommender = new PearsonBasedRecommender();
 
         List<DefaultItem> items = recommender.getRecommendations(critics, critics.get(6), DefaultItem.class);
         recommender.sortByItemValue(items);

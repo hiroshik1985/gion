@@ -13,7 +13,7 @@ public class DistanceBasedRecommenderTest {
     @Test
     public void testGetSimilarities() throws InstantiationException, IllegalAccessException {
         List<ItemList> critics = TestHelper.getTestCritics();
-        DistanceBasedRecommender<DefaultItem> recommender = new DistanceBasedRecommender<DefaultItem>();
+        DistanceBasedRecommender recommender = new DistanceBasedRecommender();
 
         List<DefaultItem> items = recommender.getSimilarities(critics, critics.get(6), DefaultItem.class);
         recommender.sortByItemValue(items);
@@ -26,7 +26,7 @@ public class DistanceBasedRecommenderTest {
     @Test
     public void testGetRecommendtionss() throws InstantiationException, IllegalAccessException {
         List<ItemList> critics = TestHelper.getTestCritics();
-        DistanceBasedRecommender<DefaultItem> recommender = new DistanceBasedRecommender<DefaultItem>();
+        DistanceBasedRecommender recommender = new DistanceBasedRecommender();
 
         List<DefaultItem> items = recommender.getRecommendations(critics, critics.get(6), DefaultItem.class);
         recommender.sortByItemValue(items);

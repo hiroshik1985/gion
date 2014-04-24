@@ -1,9 +1,9 @@
 package com.ucacu.gion.recommendation;
 
-import com.ucacu.gion.recommendation.model.ItemList;
 import com.ucacu.gion.recommendation.model.Item;
+import com.ucacu.gion.recommendation.model.ItemList;
 
-public class PearsonBasedRecommender<T extends Item> extends Recommender<T> {
+public class PearsonBasedRecommender extends Recommender {
     @Override
     public double getSimilarity(ItemList critic1, ItemList critic2) {
         int n = 0;

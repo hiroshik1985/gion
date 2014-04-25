@@ -1,11 +1,11 @@
 package com.ucacu.gion.recommendation;
 
 import com.ucacu.gion.recommendation.model.Item;
-import com.ucacu.gion.recommendation.model.ItemList;
+import com.ucacu.gion.recommendation.model.Items;
 
 public class PearsonBasedRecommender extends Recommender {
     @Override
-    public double getSimilarity(ItemList critic1, ItemList critic2) {
+    public double getSimilarity(Items items1, Items items2) {
         int n = 0;
         double sum1 = 0.0d;
         double sum2 = 0.0d;
@@ -13,8 +13,8 @@ public class PearsonBasedRecommender extends Recommender {
         double sumSquares2 = 0.0d;
         double sumProduct = 0.0d;
 
-        for (Item item1 : critic1.getItems()) {
-            for (Item item2 : critic2.getItems()) {
+        for (Item item1 : items1.getItems()) {
+            for (Item item2 : items2.getItems()) {
                 if (item1.getKey().equals(item2.getKey())) {
                     n++;
                     sum1 += item1.getValue();

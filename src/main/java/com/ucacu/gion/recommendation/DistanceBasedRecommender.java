@@ -1,11 +1,11 @@
 package com.ucacu.gion.recommendation;
 
 import com.ucacu.gion.recommendation.model.Item;
-import com.ucacu.gion.recommendation.model.ItemList;
+import com.ucacu.gion.recommendation.model.Items;
 
 public class DistanceBasedRecommender extends Recommender {
     @Override
-    public double getSimilarity(ItemList critic1, ItemList critic2) {
+    public double getSimilarity(Items critic1, Items critic2) {
         double sumSquares = 0.0d;
         for (Item item1 : critic1.getItems()) {
             for (Item item2 : critic2.getItems()) {

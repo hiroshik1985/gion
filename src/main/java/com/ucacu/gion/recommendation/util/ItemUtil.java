@@ -38,4 +38,12 @@ public class ItemUtil {
             }
         }
     }
+
+    public static Items getItemListByKey(List<Items> itemsList, Object key) {
+        for (Items items : itemsList) {
+            if (items.getKey().equals(key))
+                return items;
+        }
+        return null;
+    }
 }

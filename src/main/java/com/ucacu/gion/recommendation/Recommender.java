@@ -12,17 +12,16 @@ import com.ucacu.gion.recommendation.model.Items;
 import com.ucacu.gion.recommendation.util.ItemUtil;
 
 public abstract class Recommender {
-    public abstract double getSimilarity(Items critic1, Items critic2);
+    public abstract double getSimilarity(Items imtes1, Items imtes2);
 
-    public <T extends Item> List<T> getSimilarities(List<Items> itemsList, Items targetItems, Class<T> clazz) throws InstantiationException,
+    public <T extends Item> List<T> getSimilarities(final List<Items> itemsList, final Items targetItems, final Class<T> clazz) throws InstantiationException,
             IllegalAccessException {
 
         List<T> items = new ArrayList<T>();
         for (Items itemList : itemsList) {
             if (!targetItems.getKey().equals(itemList.getKey())) {
-                T item = clazz.newInstance();
-                item.setKey(itemList.getKey());
-                item.setValue(this.getSimilarity(itemList, targetItems));
+
+                T item = createItemInstance(clazz, itemList.getKey(), this.getSimilarity(itemList, targetItems));
                 items.add(item);
             }
         }
@@ -30,36 +29,46 @@ public abstract class Recommender {
         return items;
     }
 
-    public <T extends Item> List<T> getRecommendations(List<Items> itemsList, Items targetItems, Class<T> clazz) throws InstantiationException,
+    public <T extends Items, U extends Item> List<T> getSimilaritesList(final List<Items> itemsList, Class<T> clazzItmes, Class<U> clazzItem)
+            throws InstantiationException, IllegalAccessException {
+        List<T> similaritesList = new ArrayList<T>();
+        for (Items items : itemsList) {
+            T similarities = this.createItemsInstance(clazzItmes, items.getKey(), this.getSimilarities(itemsList, items, clazzItem));
+            similaritesList.add(similarities);
+        }
+
+        return similaritesList;
+    }
+
+    public <T extends Item> List<T> getRecommendations(final List<Items> itemsList, final Items targetItems, final Class<T> clazz)
+            throws InstantiationException,
             IllegalAccessException {
-        Map<Object, Double> totals = new HashMap<Object, Double>();
+        Map<Object, Double> scores = new HashMap<Object, Double>();
         Map<Object, Double> sumSimilarities = new HashMap<Object, Double>();
 
         for (Items itemList : itemsList) {
             if (!itemList.getKey().equals(targetItems.getKey())) {
-                double simirality = getSimilarity(itemList, targetItems);
-                if (simirality <= 0.0d)
+                double similarity = getSimilarity(itemList, targetItems);
+                if (similarity <= 0.0d)
                     continue;
 
                 for (Item item : itemList.getItems()) {
-                    Item node = ItemUtil.getItemByKey(targetItems, item.getKey());
-                    if (node == null || node.getValue() == 0.0d) {
-                        totals.put(item.getKey(),
-                                totals.containsKey(item.getKey()) ? totals.get(item.getKey()) + item.getValue() * simirality : item.getValue()
-                                        * simirality);
+                    Item itemTarget = ItemUtil.getItemByKey(targetItems, item.getKey());
+                    if (itemTarget == null || itemTarget.getValue() == 0.0d) {
+                        scores.put(item.getKey(),
+                                scores.containsKey(item.getKey()) ? scores.get(item.getKey()) + item.getValue() * similarity : item.getValue()
+                                        * similarity);
                         sumSimilarities.put(item.getKey(),
-                                sumSimilarities.containsKey(item.getKey()) ? sumSimilarities.get(item.getKey()) + simirality : simirality);
+                                sumSimilarities.containsKey(item.getKey()) ? sumSimilarities.get(item.getKey()) + similarity : similarity);
                     }
                 }
             }
         }
         List<T> recommendations = new ArrayList<T>();
 
-        for (Iterator<Entry<Object, Double>> it = totals.entrySet().iterator(); it.hasNext();) {
+        for (Iterator<Entry<Object, Double>> it = scores.entrySet().iterator(); it.hasNext();) {
             Map.Entry<Object, Double> entry = (Map.Entry<Object, Double>) it.next();
-            T item = clazz.newInstance();
-            item.setKey(entry.getKey());
-            item.setValue(entry.getValue() / sumSimilarities.get(entry.getKey()));
+            T item = createItemInstance(clazz, entry.getKey(), entry.getValue() / sumSimilarities.get(entry.getKey()));
             recommendations.add(item);
         }
 
@@ -67,4 +76,53 @@ public abstract class Recommender {
         return recommendations;
     }
 
+    public <T extends Item> List<T> getRecomendedItems(final List<Items> similaryItemsList, final Items target, final Class<T> clazz)
+            throws InstantiationException,
+            IllegalAccessException {
+        Map<Object, Double> scores = new HashMap<Object, Double>();
+        Map<Object, Double> sumSimilarities = new HashMap<Object, Double>();
+
+        for (Item item : target.getItems()) {
+            Items similarItems = ItemUtil.getItemListByKey(similaryItemsList, target.getKey());
+            for (Item similarItem : similarItems.getItems()) {
+                if (similarItem.getKey().equals(item.getKey()))
+                    continue;
+
+                scores.put(item.getKey(),
+                        scores.containsKey(item.getKey()) ? scores.get(item.getKey()) + item.getValue() * similarItem.getValue() : item.getValue()
+                                * similarItem.getValue());
+                sumSimilarities.put(item.getKey(),
+                        sumSimilarities.containsKey(item.getKey()) ? sumSimilarities.get(item.getKey()) + similarItem.getValue() : similarItem.getValue());
+
+            }
+        }
+
+        List<T> recommendations = new ArrayList<T>();
+
+        for (Iterator<Entry<Object, Double>> it = scores.entrySet().iterator(); it.hasNext();) {
+            Map.Entry<Object, Double> entry = (Map.Entry<Object, Double>) it.next();
+            T item = createItemInstance(clazz, entry.getKey(), entry.getValue() / sumSimilarities.get(entry.getKey()));
+            recommendations.add(item);
+        }
+
+        ItemUtil.sortByItemValue(recommendations);
+        return recommendations;
+    }
+
+    private <T extends Item> T createItemInstance(Class<T> clazz, Object key, double value) throws InstantiationException, IllegalAccessException {
+        T t = clazz.newInstance();
+        t.setKey(key);
+        t.setValue(value);
+
+        return t;
+    }
+
+    private <T extends Items, U extends Item> T createItemsInstance(Class<T> clazzItmes, Object key, List<U> list) throws InstantiationException,
+            IllegalAccessException {
+        T t = clazzItmes.newInstance();
+        t.setKey(key);
+        t.setItems(list);
+
+        return t;
+    }
 }

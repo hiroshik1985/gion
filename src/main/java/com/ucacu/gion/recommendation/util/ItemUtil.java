@@ -1,5 +1,6 @@
 package com.ucacu.gion.recommendation.util;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.ucacu.gion.recommendation.model.Item;
@@ -45,5 +46,32 @@ public class ItemUtil {
                 return items;
         }
         return null;
+    }
+
+    public static <T extends Items, U extends Item> transfrom(List<T> src, Class<T> clazzItems, Class<U> clazzItem) {
+        List<T> dst = new ArrayList<T>();
+        for (T items : src) {
+            for(Item item : items.getItems()){
+                for(T itemDst)
+            }
+        }
+    }
+
+    public static <T extends Item> T createItemInstance(Class<T> clazz, Object key, double value) throws InstantiationException, IllegalAccessException {
+        T t = clazz.newInstance();
+        t.setKey(key);
+        t.setValue(value);
+
+        return t;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T extends Items, U extends Item> T createItemsInstance(Class<T> clazzItmes, Object key, List<U> list) throws InstantiationException,
+            IllegalAccessException {
+        T t = clazzItmes.newInstance();
+        t.setKey(key);
+        t.setItems((List<Item>) list);
+
+        return t;
     }
 }

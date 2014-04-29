@@ -7,7 +7,7 @@ public interface Items {
 
     public void setKey(Object Key);
 
-    public <T extends Item> List<T> getItems();
+    public List<Item> getItems();
 
-    public <T extends Item> void setItems(List<T> items);
+    public void setItems(List<Item> items);
 }

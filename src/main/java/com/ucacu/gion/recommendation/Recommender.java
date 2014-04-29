@@ -21,11 +21,10 @@ public abstract class Recommender {
         for (Items itemList : itemsList) {
             if (!targetItems.getKey().equals(itemList.getKey())) {
 
-                T item = createItemInstance(clazz, itemList.getKey(), this.getSimilarity(itemList, targetItems));
+                T item = ItemUtil.createItemInstance(clazz, itemList.getKey(), this.getSimilarity(itemList, targetItems));
                 items.add(item);
             }
         }
-
         return items;
     }
 
@@ -33,7 +32,7 @@ public abstract class Recommender {
             throws InstantiationException, IllegalAccessException {
         List<T> similaritesList = new ArrayList<T>();
         for (Items items : itemsList) {
-            T similarities = this.createItemsInstance(clazzItmes, items.getKey(), this.getSimilarities(itemsList, items, clazzItem));
+            T similarities = ItemUtil.createItemsInstance(clazzItmes, items.getKey(), this.getSimilarities(itemsList, items, clazzItem));
             similaritesList.add(similarities);
         }
 
@@ -68,7 +67,7 @@ public abstract class Recommender {
 
         for (Iterator<Entry<Object, Double>> it = scores.entrySet().iterator(); it.hasNext();) {
             Map.Entry<Object, Double> entry = (Map.Entry<Object, Double>) it.next();
-            T item = createItemInstance(clazz, entry.getKey(), entry.getValue() / sumSimilarities.get(entry.getKey()));
+            T item = ItemUtil.createItemInstance(clazz, entry.getKey(), entry.getValue() / sumSimilarities.get(entry.getKey()));
             recommendations.add(item);
         }
 
@@ -101,7 +100,7 @@ public abstract class Recommender {
 
         for (Iterator<Entry<Object, Double>> it = scores.entrySet().iterator(); it.hasNext();) {
             Map.Entry<Object, Double> entry = (Map.Entry<Object, Double>) it.next();
-            T item = createItemInstance(clazz, entry.getKey(), entry.getValue() / sumSimilarities.get(entry.getKey()));
+            T item = ItemUtil.createItemInstance(clazz, entry.getKey(), entry.getValue() / sumSimilarities.get(entry.getKey()));
             recommendations.add(item);
         }
 
@@ -109,20 +108,4 @@ public abstract class Recommender {
         return recommendations;
     }
 
-    private <T extends Item> T createItemInstance(Class<T> clazz, Object key, double value) throws InstantiationException, IllegalAccessException {
-        T t = clazz.newInstance();
-        t.setKey(key);
-        t.setValue(value);
-
-        return t;
-    }
-
-    private <T extends Items, U extends Item> T createItemsInstance(Class<T> clazzItmes, Object key, List<U> list) throws InstantiationException,
-            IllegalAccessException {
-        T t = clazzItmes.newInstance();
-        t.setKey(key);
-        t.setItems(list);
-
-        return t;
-    }
 }

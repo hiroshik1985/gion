@@ -2,8 +2,8 @@ package com.ucacu.gion.recommendation.model;
 
 import java.util.List;
 
-public class DefaultItems extends ItemsTemplate implements Items {
-    public DefaultItems(Object key, List<Item> items) {
+public class DefaultItems extends ItemsTemplate<DefaultItem> implements Items<DefaultItem> {
+    public DefaultItems(Object key, List<DefaultItem> items) {
         this.key = key;
         this.items = items;
     }

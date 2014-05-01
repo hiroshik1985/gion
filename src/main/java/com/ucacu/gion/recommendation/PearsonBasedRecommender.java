@@ -5,7 +5,7 @@ import com.ucacu.gion.recommendation.model.Items;
 
 public class PearsonBasedRecommender extends Recommender {
     @Override
-    public double getSimilarity(Items items1, Items items2) {
+    public <T extends Items<U>, U extends Item> double getSimilarity(T items1, T items2) {
         int n = 0;
         double sum1 = 0.0d;
         double sum2 = 0.0d;

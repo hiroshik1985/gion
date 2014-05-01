@@ -5,10 +5,10 @@ import com.ucacu.gion.recommendation.model.Items;
 
 public class DistanceBasedRecommender extends Recommender {
     @Override
-    public double getSimilarity(Items critic1, Items critic2) {
+    public <T extends Items<U>, U extends Item> double getSimilarity(T items1, T items2) {
         double sumSquares = 0.0d;
-        for (Item item1 : critic1.getItems()) {
-            for (Item item2 : critic2.getItems()) {
+        for (Item item1 : items1.getItems()) {
+            for (Item item2 : items2.getItems()) {
                 if (item1.getKey().equals(item2.getKey())) {
                     sumSquares += Math.pow(item1.getValue() - item2.getValue(), 2);
                     break;

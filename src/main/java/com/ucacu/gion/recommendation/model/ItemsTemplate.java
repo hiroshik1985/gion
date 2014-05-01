@@ -2,9 +2,9 @@ package com.ucacu.gion.recommendation.model;
 
 import java.util.List;
 
-public abstract class ItemsTemplate {
+public abstract class ItemsTemplate<T extends Item> {
     protected Object key;
-    protected List<Item> items;
+    protected List<T> items;
 
     public Object getKey() {
         return this.key;
@@ -14,11 +14,11 @@ public abstract class ItemsTemplate {
         this.key = key;
     }
 
-    public List<Item> getItems() {
+    public List<T> getItems() {
         return this.items;
     }
 
-    public void setItems(List<Item> items) {
+    public void setItems(List<T> items) {
         this.items = items;
     }
 }

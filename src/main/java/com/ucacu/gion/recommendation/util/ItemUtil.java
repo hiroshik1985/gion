@@ -7,7 +7,7 @@ import com.ucacu.gion.recommendation.model.Item;
 import com.ucacu.gion.recommendation.model.Items;
 
 public class ItemUtil {
-    public static Boolean containsItem(Items items, Item target) {
+    public static <T extends Items<U>, U extends Item> Boolean containsItem(Items<U> items, Item target) {
         for (Item item : items.getItems()) {
             if (item.getKey().equals(target.getKey()))
                 return true;
@@ -15,10 +15,19 @@ public class ItemUtil {
         return false;
     }
 
-    public static Item getItemByKey(Items items, Object key) {
+    @SuppressWarnings("unchecked")
+    public static <T extends Items<U>, U extends Item> U getItemByKey(T items, Object key) {
         for (Item item : items.getItems()) {
             if (item.getKey().equals(key))
-                return item;
+                return (U) item;
+        }
+        return null;
+    }
+
+    public static <T extends Items<U>, U extends Item> T getItemsByKey(List<T> itemsDstList, Object key) {
+        for (T items : itemsDstList) {
+            if (items.getKey().equals(key))
+                return items;
         }
         return null;
     }
@@ -40,21 +49,29 @@ public class ItemUtil {
         }
     }
 
-    public static Items getItemListByKey(List<Items> itemsList, Object key) {
-        for (Items items : itemsList) {
-            if (items.getKey().equals(key))
-                return items;
-        }
-        return null;
-    }
-
-    public static <T extends Items, U extends Item> transfrom(List<T> src, Class<T> clazzItems, Class<U> clazzItem) {
-        List<T> dst = new ArrayList<T>();
+    @SuppressWarnings("unchecked")
+    public static <T extends Items<U>, U extends Item> List<T> transfrom(List<T> src, Class<T> clazzItems, Class<U> clazzItem) throws InstantiationException,
+            IllegalAccessException {
+        List<T> itemsDstList = new ArrayList<T>();
         for (T items : src) {
-            for(Item item : items.getItems()){
-                for(T itemDst)
+            for (Item item : items.getItems()) {
+                List<U> itemDst = new ArrayList<U>();
+                itemDst.add(ItemUtil.createItemInstance(clazzItem, items.getKey(), item.getValue()));
+
+                T itemsDst = ItemUtil.getItemsByKey(itemsDstList, item.getKey());
+
+                if (itemsDst == null) {
+                    itemsDst = ItemUtil.createItemsInstance(clazzItems, item.getKey(), itemDst);
+                    itemsDstList.add(itemsDst);
+                }
+                else {
+                    itemDst.add(ItemUtil.createItemInstance(clazzItem, items.getKey(), item.getValue()));
+                    itemsDst.getItems().add((U) itemDst);
+                }
             }
         }
+
+        return itemsDstList;
     }
 
     public static <T extends Item> T createItemInstance(Class<T> clazz, Object key, double value) throws InstantiationException, IllegalAccessException {
@@ -65,12 +82,11 @@ public class ItemUtil {
         return t;
     }
 
-    @SuppressWarnings("unchecked")
-    public static <T extends Items, U extends Item> T createItemsInstance(Class<T> clazzItmes, Object key, List<U> list) throws InstantiationException,
+    public static <T extends Items<U>, U extends Item> T createItemsInstance(Class<T> clazzItmes, Object key, List<U> list) throws InstantiationException,
             IllegalAccessException {
         T t = clazzItmes.newInstance();
         t.setKey(key);
-        t.setItems((List<Item>) list);
+        t.setItems(list);
 
         return t;
     }

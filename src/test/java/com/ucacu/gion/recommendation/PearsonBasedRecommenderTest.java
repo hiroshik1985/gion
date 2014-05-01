@@ -42,7 +42,8 @@ public class PearsonBasedRecommenderTest {
         List<DefaultItems> critics = TestHelper.getTestCritics();
         PearsonBasedRecommender recommender = new PearsonBasedRecommender();
 
-        //critics = ItemUtil.transfrom(critics, DefaultItems.class, DefaultItem.class);
-        //TestHelper.printTestData(critics);
+        critics = ItemUtil.transfrom(critics, DefaultItems.class, DefaultItem.class);
+        critics = recommender.getRecommendations(critics, critics.get(6), DefaultItem.class);
+        TestHelper.printTestData(critics);
     }
 }

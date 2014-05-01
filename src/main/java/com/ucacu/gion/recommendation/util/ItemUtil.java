@@ -55,18 +55,18 @@ public class ItemUtil {
         List<T> itemsDstList = new ArrayList<T>();
         for (T items : src) {
             for (Item item : items.getItems()) {
-                List<U> itemDst = new ArrayList<U>();
-                itemDst.add(ItemUtil.createItemInstance(clazzItem, items.getKey(), item.getValue()));
 
                 T itemsDst = ItemUtil.getItemsByKey(itemsDstList, item.getKey());
 
                 if (itemsDst == null) {
+                    List<U> itemDst = new ArrayList<U>();
+                    itemDst.add(ItemUtil.createItemInstance(clazzItem, items.getKey(), item.getValue()));
                     itemsDst = ItemUtil.createItemsInstance(clazzItems, item.getKey(), itemDst);
                     itemsDstList.add(itemsDst);
                 }
                 else {
-                    itemDst.add(ItemUtil.createItemInstance(clazzItem, items.getKey(), item.getValue()));
-                    itemsDst.getItems().add((U) itemDst);
+                    U itemDst = ItemUtil.createItemInstance(clazzItem, items.getKey(), item.getValue());
+                    itemsDst.getItems().add(itemDst);
                 }
             }
         }

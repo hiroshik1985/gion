@@ -70,8 +70,8 @@ public class TestHelper {
         return imtesList;
     }
 
-    public static <T extends Items<U>, U extends Item> void printItemsList(List<T> itemsList) {
-        for (T items : itemsList) {
+    public static <ITEMS extends Items<ITEM>, ITEM extends Item> void printItemsList(List<ITEMS> itemsList) {
+        for (ITEMS items : itemsList) {
             System.out.println(items.getKey() + " :");
             for (Item item : items.getItems()) {
                 System.out.println(" " + item.getKey() + " : " + item.getValue());

@@ -12,7 +12,7 @@ import com.ucacu.gion.recommendation.model.Items;
 import com.ucacu.gion.recommendation.util.ItemUtil;
 
 public abstract class Recommender {
-    public abstract <ITEMS extends Items<ITEM>, ITEM extends Item> double getSimilarity(ITEMS imtes1, ITEMS imtes2);
+    public abstract <ITEMS extends Items<ITEM>, ITEM extends Item> double getSimilarity(ITEMS items1, ITEMS items2);
 
     public <ITEMS extends Items<ITEM>, ITEM extends Item> List<ITEM> getSimilarities(final List<ITEMS> itemsList, final ITEMS targetItems,
             final Class<ITEM> clazz)
